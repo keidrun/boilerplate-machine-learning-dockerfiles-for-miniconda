@@ -1,0 +1,14 @@
+FROM keidrun/ml-base-mini
+
+LABEL maintainer="Keid"
+
+RUN conda update conda \
+  && conda update --all \
+  && conda install tensorflow keras \
+  && conda clean --all
+
+VOLUME /data
+
+EXPOSE 8888
+
+CMD jupyter notebook --notebook-dir=/data/notebooks --ip=0.0.0.0 --port=8888 --no-browser --allow-root
