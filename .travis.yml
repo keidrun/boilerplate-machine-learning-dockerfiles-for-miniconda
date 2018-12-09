@@ -2,8 +2,8 @@ sudo: required
 services:
   - docker
 
-# before_install:
-#   - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
+before_script:
+  - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
 
 script:
   - travis_wait 30 docker image build -t $DOCKER_USERNAME/ml-base-mini -f Dockerfile.mini.base .
@@ -11,12 +11,12 @@ script:
   - travis_wait 30 docker image build -t $DOCKER_USERNAME/ml-keras-mini -f Dockerfile.mini.keras .
   - travis_wait 30 docker image build -t $DOCKER_USERNAME/ml-pytorch-mini -f Dockerfile.mini.pytorch .
 
-# before_cache:
-#   - mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
+before_cache:
+  - mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep continuumio | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
 
-# cache:
-#   directories:
-#     - $HOME/docker
+cache:
+  directories:
+    - $HOME/docker
 
 after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
