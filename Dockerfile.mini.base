@@ -4,7 +4,7 @@ LABEL maintainer="Keid"
 
 RUN conda update conda \
   && conda update --all \
-  && conda install jupyter matplotlib numpy numexpr scipy statsmodels scikit-learn pandas pillow \
+  && conda install jupyter matplotlib numpy numexpr scipy statsmodels scikit-learn pandas pillow seaborn opencv \
   && conda clean --all
 
 VOLUME /data
